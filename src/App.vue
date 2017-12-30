@@ -8,16 +8,24 @@
         <h2>Ajouter une vidéo</h2>
       </div>
       <div class="panel-body">
-        <form id="form" class="form-inline" v-on:submit.prevent="addVideo">
-          <div class="form-group">
-            <label for="titre">Titre:</label>
-            <input type="text" id="titre" class="form-control" v-model="newVideo.titre">
+        <form id="form" v-on:submit.prevent="addVideo">
+          <div class="form-group row">
+            <div class="col-xs-2">
+              <label for="titre">Titre:</label>
+              <input type="text" id="titre" class="form-control" v-model="newVideo.titre">
+            </div>
+            <div class="col-xs-2">
+              <label for="url">URL:</label>
+              <input type="text" id="url" class="form-control" v-model="newVideo.url">
+            </div>
+            <div class="col-xs-6">
+              <label for="desc">Description:</label>
+              <input type="text" id="desc" class="form-control" v-model="newVideo.desc">
+            </div>
+            <div class="col-xs-2">
+              <input type="submit" class="btn btn-primary btn-lg" value="Ajouter">
+            </div>
           </div>
-          <div class="form-group">
-            <label for="titre">URL:</label>
-            <input type="text" id="url" class="form-control" v-model="newVideo.url">
-          </div>
-          <input type="submit" class="btn btn-primary" value="Ajouter">
         </form>
       </div>
     </div>
@@ -27,12 +35,80 @@
         <h2>Liste des vidéos</h2>
       </div>
       <div class="panel-body">
-        <table>
+        <table class="table">
           <tr v-for="video in videos">
+            <td width="600">
+              <Video :titre="video.titre" :url="video.url" :desc="video.desc"></Video>
+            </td>
             <td>
-              <h3>{{video.titre}}</h3>
-              {{video.url}}
-              <Video titre="a" url="b"></Video>
+
+              <div class="row col-xs-12">
+                <div class="row" role="button" v-on:click="addNote(video, '5')">
+                  <div class="col-xs-2 text-right">
+                    <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span> ({{getNote(video, '5')}})
+                  </div>
+                  <div class="col-xs-6">
+                    <div class="progress progress-striped">
+                      <div class="progress-bar progress-bar-success" role="progressbar" :style="getWidth(video, '5')">
+                        <span class="sr-only"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div role="button" class="row" v-on:click="addNote(video, '4')">
+                  <div class="col-xs-2 text-right">
+                      <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '4')}})
+                    </div>
+                  <div class="col-xs-6">
+                    <div class="progress progress-striped">
+                      <div class="progress-bar progress-bar-success" role="progressbar" :style="getWidth(video, '4')">
+                        <span class="sr-only"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div role="button" class="row" v-on:click="addNote(video, '3')">
+                  <div class="col-xs-2 text-right">
+                      <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '3')}})
+                    </div>
+                  <div class="col-xs-6">
+                    <div class="progress progress-striped">
+                      <div class="progress-bar progress-bar-info" role="progressbar" :style="getWidth(video, '3')">
+                        <span class="sr-only"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div role="button" class="row" v-on:click="addNote(video, '2')">
+                  <div class="col-xs-2 text-right">
+                      <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '2')}})
+                    </div>
+                  <div class="col-xs-6">
+                    <div class="progress progress-striped">
+                      <div class="progress-bar progress-bar-warning" role="progressbar" :style="getWidth(video, '2')">
+                        <span class="sr-only"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div role="button" class="row" v-on:click="addNote(video, '1')">
+                  <div class="col-xs-2 text-right">
+                      <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '1')}})
+                    </div>
+                  <div class="col-xs-6">
+                    <div class="progress progress-striped">
+                      <div class="progress-bar progress-bar-danger" role="progressbar" :style="getWidth(video, '1')">
+                        <span class="sr-only"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row col-xs-12"><br/></div>
+              <div class="row col-xs-12">
+                <span class="btn glyphicon glyphicon-trash" v-on:click="rmVideo(video)" >Supprimer</span>
+              </div>
             </td>
           </tr>
         </table>
@@ -64,20 +140,67 @@
       Video
     },
     firebase: {
-      videos: videosRef
+      videos: videosRef,
+      videosObj: { // can use keys, but v-for doesn't loop
+        source: videosRef,
+        asObject: true
+      }
     },
     data () {
         return {
             newVideo: {
               titre: '',
-              url: ''
+              url: '',
+              desc: ''
             }
         }
     },
     methods: {
-        addVideo: function(){
-            videosRef.push(this.newVideo)
+      addVideo: function(){
+        let video2= this.newVideo
+        let video_id = video2.url.split("v=")[1]
+        let ampersandPosition = video_id.indexOf('&')
+        if(ampersandPosition != -1) {
+          video_id = video_id.substring(0, ampersandPosition);
         }
+        video2.url= "https://www.youtube.com/embed/"+video_id
+        if(videosRef.push(video2)) {
+          this.newVideo.titre = ''
+          this.newVideo.url = ''
+          this.newVideo.desc = ''
+          alert("video "+video2.titre+" ajoutée !")
+        }
+      },
+      rmVideo: function(video) {
+        if(confirm("Supprimer vidéo "+video.titre+" ?")) {
+          videosRef.child(video['.key']).remove();
+        }
+      },
+      addNote: function(video, note){
+        videosRef.child(video['.key']).child("notes").child(note).transaction(function(current){
+          return (current || 0) + 1;
+        })
+        videosRef.child(video['.key']).child("notes").child("total").transaction(function(current){
+          return (current || 0) + 1;
+        })
+      },
+      getNote: function(video, note){
+        if(this.videosObj[video['.key']].notes!=null)
+          return this.videosObj[video['.key']].notes[note] || 0
+        return 0
+      },
+      getTotal: function(video){
+        let total = 0;
+        total+= this.getNote(video,5)
+        total+= this.getNote(video,4)
+        total+= this.getNote(video,3)
+        total+= this.getNote(video,2)
+        total+= this.getNote(video,1)
+        return total
+      },
+      getWidth: function(video, note){
+          return 'width:' + ( this.getNote(video, note) / this.getTotal(video) *100 ) + '%'
+      }
     }
   }
 </script>
