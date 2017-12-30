@@ -9,21 +9,29 @@
       </div>
       <div class="panel-body">
         <form id="form" v-on:submit.prevent="addVideo">
-          <div class="form-group row">
+          <div class="form-group">
+          <div class="row">
             <div class="col-xs-2">
               <label for="titre">Titre:</label>
               <input type="text" id="titre" class="form-control" v-model="newVideo.titre">
             </div>
-            <div class="col-xs-2">
+            <div class="col-xs-6">
               <label for="url">URL:</label>
               <input type="text" id="url" class="form-control" v-model="newVideo.url">
             </div>
-            <div class="col-xs-6">
+          </div>
+          <div class="row">
+            <div class="col-xs-8">
               <label for="desc">Description:</label>
-              <input type="text" id="desc" class="form-control" v-model="newVideo.desc">
+              <input type="text" id="desc" class="form-control input-lg" v-model="newVideo.desc">
             </div>
-            <div class="col-xs-2">
-              <input type="submit" class="btn btn-primary btn-lg" value="Ajouter">
+          </div>
+          <div class="row col-xs-12">
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <input type="submit" class="btn btn-primary" value="Ajouter">
+            </div>
             </div>
           </div>
         </form>
@@ -169,10 +177,10 @@
         }
         video2.url= "https://www.youtube.com/embed/"+video_id
         if(videosRef.push(video2)) {
+          alert("video "+video2.titre+" ajoutée !")
           this.newVideo.titre = ''
           this.newVideo.url = ''
           this.newVideo.desc = ''
-          alert("video "+video2.titre+" ajoutée !")
         }
       },
       rmVideo: function(video) {
