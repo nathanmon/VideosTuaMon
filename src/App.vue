@@ -42,9 +42,13 @@
             </td>
             <td>
 
+              <div class="row col-xs-offset-2">
+                <p style='font-family: "Lucida Console", Courier, monospace; font-size:300%;'><strong>{{getMoyenne(video)}}</strong></p>
+              </div>
+
               <div class="row col-xs-12">
                 <div class="row" role="button" v-on:click="addNote(video, '5')">
-                  <div class="col-xs-2 text-right">
+                  <div class="col-xs-2 text-right" style="min-width:130px">
                     <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span> ({{getNote(video, '5')}})
                   </div>
                   <div class="col-xs-6">
@@ -56,7 +60,7 @@
                   </div>
                 </div>
                 <div role="button" class="row" v-on:click="addNote(video, '4')">
-                  <div class="col-xs-2 text-right">
+                  <div class="col-xs-2 text-right"  style="min-width:130px">
                       <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '4')}})
                     </div>
                   <div class="col-xs-6">
@@ -68,7 +72,7 @@
                   </div>
                 </div>
                 <div role="button" class="row" v-on:click="addNote(video, '3')">
-                  <div class="col-xs-2 text-right">
+                  <div class="col-xs-2 text-right"  style="min-width:130px">
                       <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '3')}})
                     </div>
                   <div class="col-xs-6">
@@ -80,7 +84,7 @@
                   </div>
                 </div>
                 <div role="button" class="row" v-on:click="addNote(video, '2')">
-                  <div class="col-xs-2 text-right">
+                  <div class="col-xs-2 text-right"  style="min-width:130px">
                       <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '2')}})
                     </div>
                   <div class="col-xs-6">
@@ -92,7 +96,7 @@
                   </div>
                 </div>
                 <div role="button" class="row" v-on:click="addNote(video, '1')">
-                  <div class="col-xs-2 text-right">
+                  <div class="col-xs-2 text-right"  style="min-width:130px">
                       <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '1')}})
                     </div>
                   <div class="col-xs-6">
@@ -197,6 +201,15 @@
         total+= this.getNote(video,2)
         total+= this.getNote(video,1)
         return total
+      },
+      getMoyenne: function(video){
+        let total = 0;
+        total+= this.getNote(video,5)*5
+        total+= this.getNote(video,4)*4
+        total+= this.getNote(video,3)*3
+        total+= this.getNote(video,2)*2
+        total+= this.getNote(video,1)
+        return (total/this.getTotal(video)).toFixed(2);
       },
       getWidth: function(video, note){
           return 'width:' + ( this.getNote(video, note) / this.getTotal(video) *100 ) + '%'
