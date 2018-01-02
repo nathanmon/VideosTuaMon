@@ -1,0 +1,50 @@
+h1{
+  color:white;
+  font-family: Georgia, serif;
+  font-size:350%;
+}
+
+h2{
+  color:white;
+  font-family: Georgia, serif;
+}
+
+.progress{
+  margin-bottom:2px;
+  margin-top:2px;
+}
+
+.panel-default>.panel-heading{
+  background-color:#9EAF2B;
+  color:white;
+}
+
+.en_gros{
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size:300%;
+}
+
+.panel-body{
+  background-color:whitesmoke;
+}
+
+td{
+  padding:30px;
+  background-color: white;
+  border: 4px solid whitesmoke;
+}
+
+body{
+  background-color: #074B8C;
+}
+
+.noteBtn:hover{
+  color:#074B8C;
+  border-radius: 25px;
+  background: #9EAF2B;
+}
+
+.dropdown-menu{
+  border-color:transparent;
+  -webkit-box-shadow:0 0px 0px rgba(0,0,0,0);
+}
