@@ -42,9 +42,11 @@ body{
   color:#074B8C;
   border-radius: 25px;
   background: #9EAF2B;
+  cursor: pointer;
 }
 
 .dropdown-menu{
   border-color:transparent;
   -webkit-box-shadow:0 0px 0px rgba(0,0,0,0);
+  background-color: transparent;
 }

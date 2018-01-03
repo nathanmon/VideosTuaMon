@@ -48,8 +48,30 @@
 
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h2>Liste des vidéos</h2>
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>Liste des vidéos</h2>
+          </div>
+          <div class="col-xs-6">
+            <div class="btn-group pull-right">
+              <button type="button" class="btn btn-danger"><span class="btn glyphicon glyphicon-trash"></span> Tout supprimer</button>
+              <button type="button" class="btn btn-primary"><span class="btn glyphicon glyphicon-import"></span> Importer chaîne MBDS</button>
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <span class="btn glyphicon glyphicon-menu-hamburger"></span> Trier par</button>
+                <div class="dropdown-menu pull-right" role="menu" >
+                  <div class="btn-group-vertical pull-right">
+                    <button type="button" class="btn btn-primary" >Date</button>
+                    <button type="button" class="btn btn-primary" >Moyenne</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+
       <div class="panel-body">
         <table class="table">
           <tr v-for="video in orederedVideos()">
@@ -59,60 +81,22 @@
             <td>
               <div class="row">
                 <div class="col-xs-8">
-                  <div class="row col-xs-offset-2 col-xs-6">
+
+                  <div class="row col-xs-offset-6 col-xs-6">
                     <p class="en_gros"><strong>{{getMoyenne(video)}}</strong></p>
                   </div>
 
-                  <div class="row col-xs-12 noteBtn" role="button" v-on:click="addNote(video, '5')">
-                    <div class="col-xs-6" style="min-width:130px">
-                      <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span> ({{getNote(video, '5')}})
+                  <div class="row col-xs-12 noteBtn" v-for="note in 5" v-on:click="addNote(video, 6-note)">
+                    <div class="col-xs-6" :style="getStarsStyle(video, 6-note)">
+                      <span v-for="iStar in 6-note" class="glyphicon glyphicon-star"></span><span v-for="iStar2 in note-1" class="glyphicon glyphicon-star-empty"></span> ({{getNote(video,6-note)}})
                     </div>
                     <div class="col-xs-6">
-                      <div class="progress progress-striped">
-                        <div class="progress-bar progress-bar-success" role="progressbar" :style="getWidth(video, '5')"></div>
+                      <div class="progress ">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" :style="getWidth(video, 6-note)"></div>
                       </div>
                     </div>
                   </div>
-                  <div role="button" class="row col-xs-12 noteBtn" v-on:click="addNote(video, '4')">
-                    <div class="col-xs-6"  style="min-width:130px">
-                        <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '4')}})
-                      </div>
-                    <div class="col-xs-6">
-                      <div class="progress progress-striped">
-                        <div class="progress-bar progress-bar-success" role="progressbar" :style="getWidth(video, '4')"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div role="button" class="row col-xs-12 noteBtn" v-on:click="addNote(video, '3')">
-                    <div class="col-xs-6"  style="min-width:130px">
-                        <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '3')}})
-                      </div>
-                    <div class="col-xs-6">
-                      <div class="progress progress-striped">
-                        <div class="progress-bar progress-bar-info" role="progressbar" :style="getWidth(video, '3')"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div role="button" class="row col-xs-12 noteBtn" v-on:click="addNote(video, '2')">
-                    <div class="col-xs-6"  style="min-width:130px">
-                        <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '2')}})
-                      </div>
-                    <div class="col-xs-6">
-                      <div class="progress progress-striped">
-                        <div class="progress-bar progress-bar-warning" role="progressbar" :style="getWidth(video, '2')"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div role="button" class="row col-xs-12 noteBtn" v-on:click="addNote(video, '1')">
-                    <div class="col-xs-6"  style="min-width:130px">
-                        <span class="glyphicon glyphicon-star"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> ({{getNote(video, '1')}})
-                      </div>
-                    <div class="col-xs-6">
-                      <div class="progress progress-striped">
-                        <div class="progress-bar progress-bar-danger" role="progressbar" :style="getWidth(video, '1')"></div>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
 
 
@@ -120,8 +104,8 @@
                   <button type="button" data-toggle="dropdown" class="btn btn-primary pull-right dropdown-toggle"><span class="btn glyphicon glyphicon-menu-hamburger"></span></button>
                   <div class="dropdown-menu pull-right" role="menu" >
                     <div class="btn-group-vertical pull-right">
-                      <button type="button" class="btn btn-warning " ><span class="btn glyphicon glyphicon-edit"> Modifier</span></button>
-                      <button type="button" class="btn btn-warning " v-on:click=rmVideo(video)><span class="btn glyphicon glyphicon-trash"> Supprimer</span></button>
+                      <button type="button" class="btn btn-primary" ><span class="btn glyphicon glyphicon-edit"> Modifier</span></button>
+                      <button type="button" class="btn btn-danger" v-on:click=rmVideo(video)><span class="btn glyphicon glyphicon-trash"> Supprimer</span></button>
                     </div>
                   </div>
                 </div>
@@ -151,6 +135,7 @@
   let app = Firebase.initializeApp(config)
   let db = app.database()
   let videosRef = db.ref('videos')
+  let myNotes = {}
 
   export default {
     name: 'app',
@@ -210,6 +195,11 @@
       rmVideo: function(video) {
           videosRef.child(video['.key']).remove();
       },
+      getStarsStyle:function(video, note){
+        if(myNotes[video['.key']]===note)
+            return 'min-width:130px;color:blue;'
+        return 'min-width:130px'
+      },
       addNote: function(video, note){
         videosRef.child(video['.key']).child("notes").child(note).transaction(function(current){
           return (current || 0) + 1;
@@ -217,6 +207,15 @@
         videosRef.child(video['.key']).child("notes").child("total").transaction(function(current){
           return (current || 0) + 1;
         })
+        if(myNotes[video['.key']]!= undefined){
+          videosRef.child(video['.key']).child("notes").child(myNotes[video['.key']]).transaction(function(current){
+            return current - 1;
+          })
+          videosRef.child(video['.key']).child("notes").child("total").transaction(function(current){
+            return current - 1;
+          })
+        }
+        myNotes[video['.key']]=note;
       },
       getNote: function(video, note){
         if(this.videosObj[video['.key']].notes!=null){
@@ -243,7 +242,7 @@
         return (total/this.getTotal(video)).toFixed(2);
       },
       getWidth: function(video, note){
-          return 'width:' + ( this.getNote(video, note) / this.getTotal(video) *100 ) + '%'
+          return 'width:' + ( this.getNote(video, note) / this.getTotal(video) *100 ) + '%;background-color:rgb('+(255-(note-1)/4*255)+','+((note-1)/4*255)+',0);'
       },
       isTitreOk:function(){
         for ( let video in this.videos ) {
