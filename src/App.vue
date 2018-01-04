@@ -13,33 +13,31 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">
+      <div class="panel-heading" data-toggle="collapse" href="#addVideoPanel">
         <h2>Ajouter une vidéo</h2>
       </div>
-      <div class="panel-body">
+      <div id="addVideoPanel" class="panel-collapse collapse panel-body">
         <div class="row col-xs-offset-1">
-          <form id="form" v-on:submit.prevent="addVideo">
+          <form id="form" v-on:submit.prevent="addVideo(newVideo)">
             <div class="row">
-              <div :class=titreClass >
+              <div :class=getTitreClass(newVideo.titre) >
                 <label class="form-control-label" for="titre">Titre:</label>
                 <input type="text" id="titre" class="form-control" v-model="newVideo.titre" >
               </div>
-              <div :class=urlClass >
+              <div :class=getUrlClass(newVideo.url)>
                 <label class="form-control-label" for="url">URL:</label>
                 <input type="text" id="url" class="form-control" v-model="newVideo.url" >
               </div>
             </div>
             <div class="row">
-              <div class='col-xs-10' >
+              <div :class=getDescClass(newVideo.desc) >
                 <label class="form-control-label" for="desc">Description:</label>
                 <input type="text" id="desc" class="form-control" v-model="newVideo.desc" >
               </div>
             </div>
             <div class="row col-xs-12"><br/></div>
-            <div class="row">
-              <div class="col-xs-12">
-                <input type="submit" :class=addBtnClass value="Ajouter">
-              </div>
+            <div class="row col-xs-12">
+              <input type="submit" :class=getAddBtnClass(newVideo) value="Ajouter">
             </div>
           </form>
         </div>
@@ -47,32 +45,47 @@
     </div>
 
     <div class="panel panel-default">
-      <div class="panel-heading">
-        <div class="row">
-          <div class="col-xs-6">
-            <h2>Liste des vidéos</h2>
+      <div class="panel-heading" data-toggle="collapse" href="#searchVideoPanel">
+        <h2>Rechercher une vidéo</h2>
+      </div>
+      <div id="searchVideoPanel" class="panel-collapse collapse panel-body">
+        <div class="row col-xs-offset-1">
+          <div class="row col-xs-10">
+            <label class="form-control-label" for="searchInput">Titre:</label>
           </div>
-          <div class="col-xs-6">
-            <div class="btn-group pull-right">
-              <button type="button" class="btn btn-danger"><span class="btn glyphicon glyphicon-trash"></span>Tout supprimer</button>
-              <button type="button" class="btn btn-primary"><span class="btn glyphicon glyphicon-import"></span>Importer chaîne MBDS</button>
-              <div class="btn-group">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                  <span class="btn glyphicon glyphicon-sort"></span>Trier par ...</button>
-                <div class="dropdown-menu pull-right" role="menu" >
-                  <div class="btn-group-vertical pull-right">
-                    <button type="button" class="btn btn-primary" v-on:click="orderByDate()">Date</button>
-                    <button type="button" class="btn btn-primary" v-on:click="orderByMoy()">Moyenne</button>
-                  </div>
-                </div>
-              </div>
+          <div class="row">
+            <div class="col-xs-4">
+              <input id="searchInput" type="text" class="form-control col-xs-3" v-model="searchInput">
+            </div>
+            <div class="col-xs-1">
+              <button type="button" class="btn btn-danger" v-on:click="clearSearch()"><span class="glyphicon glyphicon-remove"></span></button>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-
-      <div class="panel-body">
+    <div class="panel panel-default">
+      <div class="panel-heading" data-toggle="collapse" href="#listVideoPanel">
+          <h2>Liste des vidéos</h2>
+      </div>
+      <div id="listVideoPanel" class="panel-collapse collapse panel-body">
+        <div class="row col-xs-12">
+          <div class="btn-group pull-right">
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-sort"></span> Trier par ...</button>
+              <div class="dropdown-menu pull-right" role="menu" >
+                <div class="btn-group-vertical pull-right">
+                  <button type="button" class="btn btn-primary" v-on:click="orderByDate()">Date</button>
+                  <button type="button" class="btn btn-primary" v-on:click="orderByMoy()">Moyenne</button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-import"></span> Importer chaîne MBDS</button>
+            <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Tout supprimer</button>
+          </div>
+        </div>
         <div class="row col-xs-12" align="center">
           <div class="btn-group">
             <button type="button" :class=prevBtnClass v-on:click="goPrevPage()"><span class="glyphicon glyphicon-chevron-left"></span></button>
@@ -82,46 +95,8 @@
         </div>
         <table class="table">
           <tr v-for="video in orderedVideos()" class="row col-xs-12">
-            <td class="col-xs-6">
-              <Video :titre="video.titre" :url="video.url" :desc="video.desc"></Video>
-            </td>
-            <td class="col-xs-6">
-              <div class="row">
-                <div class="col-xs-8">
-
-                  <div class="col-xs-6">
-                    <span class="badge en_gros">{{getVideoRank(video)}}</span>
-                  </div>
-                  <div class="col-xs-6">
-                    <p :style="getMoyStyle(video)"><strong>{{getMoyenne(video)}}</strong></p>
-                  </div>
-
-                  <div class="row col-xs-12 noteBtn" v-for="note in 5" v-on:click="addNote(video, 6-note)">
-                    <div class="col-xs-6" :style="getStarsStyle(video, 6-note)">
-                      <span v-for="iStar in 6-note" class="glyphicon glyphicon-star"></span><span v-for="iStar2 in note-1" class="glyphicon glyphicon-star-empty"></span> ({{getNote(video,6-note)}})
-                    </div>
-                    <div class="col-xs-6">
-                      <div class="progress ">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" :style="getWidth(video, 6-note)"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-
-                <div class="col-xs-4 btn-group">
-                  <button type="button" data-toggle="dropdown" class="btn btn-primary pull-right dropdown-toggle"><span class="btn glyphicon glyphicon-menu-hamburger"></span></button>
-                  <div class="dropdown-menu pull-right" role="menu" >
-                    <div class="btn-group-vertical pull-right">
-                      <button type="button" class="btn btn-primary" ><span class="btn glyphicon glyphicon-edit"></span>Modifier</button>
-                      <button type="button" class="btn btn-danger" v-on:click=rmVideo(video)><span class="btn glyphicon glyphicon-trash"></span>Supprimer</button>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </td>
+            <Video :getVideoRank=getVideoRank :getMoyenne=getMoyenne :video=video :rmVideo=rmVideo :getTotal=getTotal :getNote=getNote
+                   :addNote=addNote :myNotes=myNotes :rmNotes=rmNotes :totalVideos=videos.length :modifierVideo=modifierVideo></Video>
           </tr>
         </table>
         <div class="row col-xs-12" align="center">
@@ -133,13 +108,46 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="modifierModal" role="dialog">
+      <div class="modal-dialog modal-lg" >
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>
+            <h2 class="modal-title">Modifier Vidéo</h2>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="row">
+                  <div :class=getTitreClass(videoAModifier.titre) >
+                    <label class="form-control-label" for="titre2">Titre:</label>
+                    <input type="text" id="titre2" class="form-control" v-model="videoAModifier.titre" >
+                  </div>
+                </div>
+                <div class="row">
+                  <div :class=getDescClass(videoAModifier.desc) >
+                    <label class="form-control-label" for="desc2">Description:</label>
+                    <input type="text" id="desc2" class="form-control" v-model="videoAModifier.desc" >
+                  </div>
+                </div>
+                <div class="row col-xs-12"><br/></div>
+                <div class="row col-xs-12">
+                  <input :class=getRegBtnClass(videoAModifier) value="Enregistrer">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
   import Firebase from 'firebase'
   import Video from './components/Video.vue'
-
 
   let config = {
     apiKey: "AIzaSyAxbhUwyrGYVlKe10Mr4tA8IS0iFeYwW4g",
@@ -152,7 +160,6 @@
   let app = Firebase.initializeApp(config)
   let db = app.database()
   let videosRef = db.ref('videos')
-  let myNotes = {}
 
   export default {
     name: 'app',
@@ -160,11 +167,7 @@
       Video
     },
     firebase: {
-      videos: videosRef,
-      videosObj: { // can use keys, but v-for doesn't loop
-        source: videosRef,
-        asObject: true
-      }
+      videos: videosRef
     },
     data () {
         return {
@@ -173,29 +176,76 @@
             url: '',
             desc: ''
           },
-          addBtnClass: 'btn btn-primary disabled',
-          prevBtnClass: 'btn btn-primary disabled',
-          nextBtnClass: 'btn btn-primary disabled',
-          titreClass: 'col-xs-4',
-          urlClass: 'col-xs-6',
+          videoAModifier:  {
+            titre: '',
+            desc: '',
+            url: ''
+          },
+          prevBtnClass: '',
+          nextBtnClass: '',
           order: 'date',
-          currentPage: 1
+          currentPage: 1,
+          searchInput: '',
+          myNotes: {}
         }
     },
     watch: {
-      "newVideo.titre": function(){
-        this.checkNewTitre()
-      },
-      "newVideo.url": function(){
-        this.checkNewUrl()
+      "searchInput": function(){
+        this.currentPage=1
       }
     },
     methods: {
+      addVideo(video){
+        if(video.titre !== '' && video.desc !== '' && this.isUrlOk(video.url)) {
+          video.url = this.urlToEmbed(video.url)
+          videosRef.push(video)
+          this.newVideo.titre = ''
+          this.newVideo.url = ''
+          this.newVideo.desc = ''
+        }
+      },
+      modifierVideo(video){
+        this.videoAModifier = Object.assign({},video)
+      },
+      regVideo(video){
+        if(video.titre !== '' && video.desc !== '')
+            videosRef.child(video['.key']).update({"titre":video.titre,"desc":video.desc})
+      },
+      rmVideo(video) {
+        videosRef.child(video['.key']).remove()
+      },
+      rmNotes(video){
+        videosRef.child(video['.key']).child("notes").remove()
+        delete this.myNotes[video['.key']]
+      },
+      addNote(video, note){
+        videosRef.child(video['.key']).child("notes").child(note).transaction(function(current){
+          return (current || 0) + 1;
+        })
+        videosRef.child(video['.key']).child("notes").child("total").transaction(function(current){
+          return (current || 0) + 1;
+        })
+        if(this.myNotes[video['.key']]!= undefined){
+          videosRef.child(video['.key']).child("notes").child(this.myNotes[video['.key']]).transaction(function(current){
+            return current - 1;
+          })
+          videosRef.child(video['.key']).child("notes").child("total").transaction(function(current){
+            return current - 1;
+          })
+        }
+        this.myNotes[video['.key']]=note;
+      },
+      getNote(video, note){
+        if(video.notes!=null){
+          return video.notes[note] || 0
+        }
+        return 0
+      },
       orderedVideos(){
-        let orderedCopy = this.videos.slice().reverse();
+        let orderedCopy = this.searchByTitre().reverse()
         if (this.order === 'moy'){
           let orderedCopy2 = []
-          for (let rank in orderedCopy)
+          for (let rank in this.videos)
             for (let i in orderedCopy)
               if (this.getVideoRank(orderedCopy[i]) === (Number(rank) + 1))
                 orderedCopy2.push(orderedCopy[i])
@@ -212,7 +262,7 @@
         return orderedCopy.slice(5*(this.currentPage-1),5+5*(this.currentPage-1))
       },
       hasNextPage(){
-        return this.videos.length>5+5*(this.currentPage-1)
+        return this.searchByTitre().length>5+5*(this.currentPage-1)
       },
       hasPrevPage(){
         return this.currentPage>1
@@ -252,43 +302,6 @@
         }
         return "https://www.youtube.com/embed/"+video_id
       },
-      addVideo(){
-          if(this.isTitreOk()&&this.isUrlOk()) {
-            let video2 = this.newVideo
-            video2.url = this.urlToEmbed(video2.url)
-            if (videosRef.push(video2)) {
-              this.newVideo.titre = ''
-              this.newVideo.url = ''
-              this.newVideo.desc = ''
-            }
-          }
-      },
-      rmVideo(video) {
-          videosRef.child(video['.key']).remove();
-      },
-      addNote(video, note){
-        videosRef.child(video['.key']).child("notes").child(note).transaction(function(current){
-          return (current || 0) + 1;
-        })
-        videosRef.child(video['.key']).child("notes").child("total").transaction(function(current){
-          return (current || 0) + 1;
-        })
-        if(myNotes[video['.key']]!= undefined){
-          videosRef.child(video['.key']).child("notes").child(myNotes[video['.key']]).transaction(function(current){
-            return current - 1;
-          })
-          videosRef.child(video['.key']).child("notes").child("total").transaction(function(current){
-            return current - 1;
-          })
-        }
-        myNotes[video['.key']]=note;
-      },
-      getNote(video, note){
-        if(this.videosObj[video['.key']].notes!=null){
-          return this.videosObj[video['.key']].notes[note] || 0
-        }
-        return 0
-      },
       getTotal(video){
         let total = 0;
         total+= this.getNote(video,5)
@@ -307,59 +320,53 @@
         total+= this.getNote(video,1)
         return (total/this.getTotal(video)).toFixed(2);
       },
-      getStarsStyle(video, note){
-        if(myNotes[video['.key']]===note)
-          return 'min-width:130px;color:blue;'
-        return 'min-width:130px'
-      },
-      getMoyStyle(video){
-        let moy = this.getMoyenne(video)
-        if(moy!=='NaN')
-          return 'font-family: "Lucida Console", Monaco, monospace;color:rgb('+(255-(moy-1)/4*255).toFixed(0)+','+((moy-1)/4*255).toFixed(0)+',0);font-size:300%;'
-        return 'font-family: "Lucida Console", Monaco, monospace;font-size:300%;'
-      },
-      getWidth(video, note){
-          return 'width:' + ( this.getNote(video, note) / this.getTotal(video) *100 || 0) + '%;background-color:rgb('+(255-(note-1)/4*255)+','+((note-1)/4*255)+',0);'
-      },
-      isTitreOk(){
-        for ( let video in this.videos ) {
-          if (this.newVideo.titre === this.videos[video].titre || this.newVideo.titre === '') {
-            return false
-          }
-        }
-        return true
-      },
-      isUrlOk(){
-          if(this.newVideo.url.length<1)
+      isUrlOk(url){
+          if(url.length<1)
               return false
-          if(this.newVideo.url.split("v=").length<2)
+          if(url.split("v=").length<2)
               return false
-        let embed = this.urlToEmbed(this.newVideo.url)
+        let embed = this.urlToEmbed(url)
         for ( let video in this.videos ) {
           if (embed === this.videos[video].url)
             return false
         }
         return true
       },
-      checkNewTitre(){
-        if(this.isTitreOk())
-          this.titreClass = 'col-xs-4 has-success'
-        else
-          this.titreClass = 'col-xs-4 has-error'
-        this.checkNewVideo()
+      getTitreClass(value){
+        if(value !== '')
+          return 'col-xs-4 has-success'
+        return 'col-xs-4 has-error'
       },
-      checkNewUrl(){
-        if(this.isUrlOk())
-          this.urlClass = 'col-xs-6 has-success'
-        else
-          this.urlClass = 'col-xs-6 has-error'
-        this.checkNewVideo()
+      getDescClass(value){
+        if(value !== '')
+          return 'col-xs-10 has-success'
+        return 'col-xs-10 has-error'
       },
-      checkNewVideo() {
-        if (this.isTitreOk() && this.isUrlOk())
-          this.addBtnClass = 'btn btn-primary'
-        else
-          this.addBtnClass = 'btn btn-primary disabled'
+      getUrlClass(url){
+        if(this.isUrlOk(url))
+          return 'col-xs-6 has-success'
+        return 'col-xs-6 has-error'
+      },
+      getAddBtnClass(video) {
+        if (video.titre !== '' && video.desc !== '' && this.isUrlOk(video.url))
+          return 'btn btn-primary'
+        return 'btn btn-primary disabled'
+      },
+      getRegBtnClass(video) {
+        if (video.titre !== '' && video.desc !== '')
+          return 'btn btn-primary'
+        return 'btn btn-primary disabled'
+      },
+      searchByTitre(){
+        let result = []
+        for (let video in this.videos) {
+          if (this.videos[video].titre.includes(this.searchInput))
+            result.push(this.videos[video])
+        }
+        return result
+      },
+      clearSearch(){
+          this.searchInput =''
       }
     }
   }
