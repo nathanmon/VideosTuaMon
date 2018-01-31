@@ -82,7 +82,6 @@
                 </div>
               </div>
             </div>
-            <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-import"></span> Importer chaîne MBDS</button>
             <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Tout supprimer</button>
           </div>
         </div>
@@ -108,6 +107,26 @@
         </div>
       </div>
     </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading" data-toggle="collapse" href="#listVideoYT">
+          <h2>Liste des vidéos de la chaine youtube</h2>
+      </div>
+
+      <div id="listVideoYT" class="panel-collapse collapse panel-body">
+        <div class="btn-group pull-right">
+          <button type="button" class="btn btn-primary" v-on:click="recupererChaineYT()"><span class="glyphicon glyphicon-import"></span> Importer chaîne MBDS</button>
+        </div>
+        <table class="table" id="YTData">
+          <tr v-for="item in YTList" class="row col-xs-12">
+            <VideoYT :item=item></VideoYT>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+
+
 
     <div class="modal fade" id="modifierModal" role="dialog">
       <div class="modal-dialog modal-lg" >
@@ -145,9 +164,12 @@
   </div>
 </template>
 
+
+
 <script>
   import Firebase from 'firebase'
   import Video from './components/Video.vue'
+  import VideoYT from './components/VideoYT.vue'
 
   let config = {
     apiKey: "AIzaSyAxbhUwyrGYVlKe10Mr4tA8IS0iFeYwW4g",
@@ -164,7 +186,8 @@
   export default {
     name: 'app',
     components: {
-      Video
+      Video,
+      VideoYT
     },
     firebase: {
       videos: videosRef
@@ -181,6 +204,7 @@
             desc: '',
             url: ''
           },
+          YTList: {},
           prevBtnClass: '',
           nextBtnClass: '',
           order: 'date',
@@ -195,6 +219,14 @@
       }
     },
     methods: {
+      recupererChaineYT() {
+        var _this = this;
+        $.getJSON('https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UC0eTHgZgfkQq3_rgpdggCEA&order=date&key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM', function (json) {
+            //console.log(json.items);
+            json.items.pop();
+            _this.YTList = json.items;
+        });
+      },
       addVideo(video){
         if(video.titre !== '' && video.desc !== '' && this.isUrlOk(video.url)) {
           video.url = this.urlToEmbed(video.url)
